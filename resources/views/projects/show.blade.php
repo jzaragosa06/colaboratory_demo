@@ -32,7 +32,11 @@
         <ul>
             @foreach ($project->users as $user)
                 <li>
-                    {{ $user->name }} ({{ $user->pivot->role }}) - {{ $user->pivot->invitation_status }}
+                    @if ($user->id == Auth::id())
+                        {{ $user->name }} ({{ $user->pivot->role }})
+                    @else
+                        {{ $user->name }} ({{ $user->pivot->role }}) - {{ $user->pivot->invitation_status }}
+                    @endif
                     @if ($user->pivot->invitation_status == 'pending' && $user->id == Auth::id())
                         <form action="{{ route('projects.acceptInvitation', $project) }}" method="POST"
                             style="display:inline;">

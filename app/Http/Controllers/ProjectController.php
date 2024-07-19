@@ -30,7 +30,8 @@ class ProjectController extends Controller
             'description' => $request->description,
             'owner_id' => Auth::id()
         ]);
-        $project->users()->attach(Auth::id(), ['role' => 'owner']);
+        // $project->users()->attach(Auth::id(), ['role' => 'owner']);
+        $project->users()->attach(Auth::id(), ['role' => 'owner', 'invitation_status' => 'accepted']);
         return redirect()->route('projects.index');
     }
 
