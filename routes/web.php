@@ -24,6 +24,7 @@ Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::resource('projects', ProjectController::class)->middleware('auth');
+
 Route::post('projects/{project}/invite', [ProjectController::class, 'invite'])->name('projects.invite')->middleware('auth');
 // Route::get('projects/{project}/accept-invitation/{token}', [ProjectController::class, 'acceptInvitation'])->name('projects.acceptInvitation')->middleware('auth');
 Route::post('projects/{project}/invite', [ProjectController::class, 'invite'])->name('projects.invite')->middleware('auth');
@@ -32,7 +33,7 @@ Route::post('projects/{project}/accept', [ProjectController::class, 'acceptInvit
 
 Route::get('/invitations', function () {
     return view('invitations.index');
-})->middleware('auth')->name('invitations.index');
+})->middleware('auth')->name('invitations.index'); 
 
 
 

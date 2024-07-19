@@ -49,6 +49,8 @@ class ProjectController extends Controller
     //     return redirect()->route('projects.show', $project)->with('error', 'User not found');
     // }
 
+
+
     public function invite(Request $request, Project $project)
     {
         $user = User::where('email', $request->email)->first();
