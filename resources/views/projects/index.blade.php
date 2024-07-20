@@ -4,7 +4,8 @@
     <div class="container">
         <h1>Projects</h1>
         <a href="{{ route('projects.create') }}" class="btn btn-primary">Create Project</a><br>
-        <a href="{{ route('invitations.index') }}">Invitations</a>
+        <a href="{{ route('invitations.index') }}">Invitations</a><br>
+        <a href="{{ route('profile') }}">Go to Profile (upload)</a>
         <ul>
             @foreach ($projects as $project)
                 <li>

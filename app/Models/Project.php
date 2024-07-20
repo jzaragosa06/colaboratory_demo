@@ -36,4 +36,14 @@ class Project extends Model
         return $this->belongsTo(User::class, 'owner_id');
     }
 
+    public function files()
+    {
+        return $this->hasMany(File::class);
+    }
+
+    public function messages()
+    {
+        return $this->hasMany(Message::class);
+    }
+
 }

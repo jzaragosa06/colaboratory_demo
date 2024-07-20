@@ -2,7 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProjectController;
-
+use App\Http\Controllers\FileController;
+use App\Http\Controllers\MessageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,8 +34,16 @@ Route::post('projects/{project}/accept', [ProjectController::class, 'acceptInvit
 
 Route::get('/invitations', function () {
     return view('invitations.index');
-})->middleware('auth')->name('invitations.index'); 
+})->middleware('auth')->name('invitations.index');
 
+Route::post('files', [FileController::class, 'store'])->name('files.store')->middleware('auth');
+
+// routes/web.php
+Route::get('/profile', function () {
+    return view('profile');
+})->middleware('auth')->name('profile');
+
+Route::post('projects/{project}/messages', [MessageController::class, 'store'])->name('messages.store')->middleware('auth');
 
 
 

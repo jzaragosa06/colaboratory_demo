@@ -59,4 +59,14 @@ class User extends Authenticatable
     {
         return $this->projects()->wherePivot('invitation_status', 'pending');
     }
+
+    public function files()
+    {
+        return $this->hasMany(File::class);
+    }
+
+    public function messages()
+    {
+        return $this->hasMany(Message::class);
+    }
 }

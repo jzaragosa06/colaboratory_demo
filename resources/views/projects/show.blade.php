@@ -1,27 +1,4 @@
-{{-- @extends('layouts.app')
-
-@section('content')
-    <div class="container">
-        <h1>{{ $project->name }}</h1>
-        <p>{{ $project->description }}</p>
-        <h2>Collaborators</h2>
-        <ul>
-            @foreach ($project->users as $user)
-                <li>{{ $user->name }} ({{ $user->pivot->role }})</li>
-            @endforeach
-        </ul>
-        <form action="{{ route('projects.invite', $project) }}" method="POST">
-            @csrf
-            <div class="form-group">
-                <label for="email">Invite by Email</label>
-                <input type="email" name="email" id="email" class="form-control">
-            </div>
-            <button type="submit" class="btn btn-primary">Invite</button>
-        </form>
-    </div>
-@endsection --}}
-
-
+{{-- 
 @extends('layouts.app')
 
 @section('content')
@@ -55,5 +32,176 @@
             </div>
             <button type="submit" class="btn btn-primary">Invite</button>
         </form>
+    </div>
+@endsection
++ --}}
+
+{{-- @extends('layouts.app')
+
+@section('content')
+<div class="container">
+    <h1>{{ $project->name }}</h1>
+    <p>{{ $project->description }}</p>
+    <h2>Collaborators</h2>
+    <ul>
+        @foreach ($project->users as $user)
+        <li>
+            {{ $user->name }} ({{ $user->pivot->role }}) - {{ $user->pivot->invitation_status }}
+            @if ($user->pivot->invitation_status == 'pending' && $user->id == Auth::id())
+            <form action="{{ route('projects.acceptInvitation', $project) }}" method="POST" style="display:inline;">
+                @csrf
+                <button type="submit" class="btn btn-primary btn-sm">Accept Invitation</button>
+            </form>
+            @endif
+        </li>
+        @endforeach
+    </ul>
+    <form action="{{ route('projects.invite', $project) }}" method="POST">
+        @csrf
+        <div class="form-group">
+            <label for="email">Invite by Email</label>
+            <input type="email" name="email" id="email" class="form-control">
+        </div>
+        <button type="submit" class="btn btn-primary">Invite</button>
+    </form>
+    <h2>Upload File to Project</h2>
+    <form action="{{ route('files.store') }}" method="POST" enctype="multipart/form-data">
+        @csrf
+        <input type="hidden" name="project_id" value="{{ $project->id }}">
+        <div class="form-group">
+            <label for="file">File</label>
+            <input type="file" name="file" id="file" class="form-control">
+        </div>
+        <button type="submit" class="btn btn-primary">Upload</button>
+    </form>
+    <h2>Project Files</h2>
+    <ul>
+        @foreach ($project->files as $file)
+        <li>
+            <a href="{{ Storage::url($file->path) }}">{{ $file->filename }}</a>
+        </li>
+        @endforeach
+    </ul>
+</div>
+@endsection --}}
+
+
+{{-- 
+
+@extends('layouts.app')
+
+@section('content')
+    <div class="container">
+        <h1>{{ $project->name }}</h1>
+        <p>{{ $project->description }}</p>
+        <h2>Collaborators</h2>
+        <ul>
+            @foreach ($project->users as $user)
+                <li>
+                    {{ $user->name }} ({{ $user->pivot->role }}) - {{ $user->pivot->invitation_status }}
+                    @if ($user->pivot->invitation_status == 'pending' && $user->id == Auth::id())
+                        <form action="{{ route('projects.acceptInvitation', $project) }}" method="POST"
+                            style="display:inline;">
+                            @csrf
+                            <button type="submit" class="btn btn-primary btn-sm">Accept Invitation</button>
+                        </form>
+                    @endif
+                </li>
+            @endforeach
+        </ul>
+        <form action="{{ route('projects.invite', $project) }}" method="POST">
+            @csrf
+            <div class="form-group">
+                <label for="email">Invite by Email</label>
+                <input type="email" name="email" id="email" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-primary">Invite</button>
+        </form>
+        <h2>Upload File to Project</h2>
+        <form action="{{ route('files.store') }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            <input type="hidden" name="project_id" value="{{ $project->id }}">
+            <div class="form-group">
+                <label for="file">File</label>
+                <input type="file" name="file" id="file" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-primary">Upload</button>
+        </form>
+        <h2>Project Files</h2>
+        <ul>
+            @foreach ($project->files as $file)
+                <li>
+                    <a href="{{ Storage::url($file->path) }}">{{ $file->filename }}</a>
+                </li>
+            @endforeach
+        </ul>
+    </div>
+@endsection --}}
+
+
+@extends('layouts.app')
+
+@section('content')
+    <div class="container">
+        <h1>{{ $project->name }}</h1>
+        <p>{{ $project->description }}</p>
+        <h2>Collaborators</h2>
+        <ul>
+            @foreach ($project->users as $user)
+                <li>
+                    {{ $user->name }} ({{ $user->pivot->role }}) - {{ $user->pivot->invitation_status }}
+                    @if ($user->pivot->invitation_status == 'pending' && $user->id == Auth::id())
+                        <form action="{{ route('projects.acceptInvitation', $project) }}" method="POST"
+                            style="display:inline;">
+                            @csrf
+                            <button type="submit" class="btn btn-primary btn-sm">Accept Invitation</button>
+                        </form>
+                    @endif
+                </li>
+            @endforeach
+        </ul>
+        <form action="{{ route('projects.invite', $project) }}" method="POST">
+            @csrf
+            <div class="form-group">
+                <label for="email">Invite by Email</label>
+                <input type="email" name="email" id="email" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-primary">Invite</button>
+        </form>
+        <h2>Upload File to Project</h2>
+        <form action="{{ route('files.store') }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            <input type="hidden" name="project_id" value="{{ $project->id }}">
+            <div class="form-group">
+                <label for="file">File</label>
+                <input type="file" name="file" id="file" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-primary">Upload</button>
+        </form>
+        <h2>Project Files</h2>
+        <ul>
+            @foreach ($project->files as $file)
+                <li>
+                    <a href="{{ Storage::url($file->path) }}">{{ $file->filename }}</a>
+                </li>
+            @endforeach
+        </ul>
+        <h2>Messages</h2>
+        <form action="{{ route('messages.store', $project) }}" method="POST">
+            @csrf
+            <div class="form-group">
+                <label for="message">Leave a Message</label>
+                <textarea name="message" id="message" class="form-control" rows="3" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Post Message</button>
+        </form>
+        <ul>
+            @foreach ($project->messages as $message)
+                <li>
+                    <strong>{{ $message->user->name }}:</strong> {{ $message->message }}
+                    <em>{{ $message->created_at->diffForHumans() }}</em>
+                </li>
+            @endforeach
+        </ul>
     </div>
 @endsection
