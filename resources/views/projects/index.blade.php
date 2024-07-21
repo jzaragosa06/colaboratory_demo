@@ -13,5 +13,8 @@
                 </li>
             @endforeach
         </ul>
+        <hr>
+        <a class="nav-link" href="{{ route('user.files') }}">My Files</a>
+
     </div>
 @endsection

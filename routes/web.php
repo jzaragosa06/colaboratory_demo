@@ -45,5 +45,9 @@ Route::get('/profile', function () {
 
 Route::post('projects/{project}/messages', [MessageController::class, 'store'])->name('messages.store')->middleware('auth');
 
+Route::post('files/{file}/associate', [FileController::class, 'associateJson'])->name('files.associateJson')->middleware('auth');
 
 
+
+Route::get('/user/files', [FileController::class, 'showUserFiles'])->name('user.files');
+Route::post('/user/files/{file}/associate-json', [FileController::class, 'associateUserJson'])->name('user.files.associateJson');

@@ -9,6 +9,35 @@ class File extends Model
 {
     use HasFactory;
 
+    // protected $fillable = ['user_id', 'project_id', 'filename', 'path'];
+
+    // public function user()
+    // {
+    //     return $this->belongsTo(User::class);
+    // }
+
+    // public function project()
+    // {
+    //     return $this->belongsTo(Project::class);
+    // }
+
+    // protected $fillable = ['user_id', 'project_id', 'filename', 'path'];
+
+    // public function user()
+    // {
+    //     return $this->belongsTo(User::class);
+    // }
+
+    // public function project()
+    // {
+    //     return $this->belongsTo(Project::class);
+    // }
+
+    // public function associations()
+    // {
+    //     return $this->hasMany(FileAssociation::class);
+    // }
+
     protected $fillable = ['user_id', 'project_id', 'filename', 'path'];
 
     public function user()
@@ -19,5 +48,10 @@ class File extends Model
     public function project()
     {
         return $this->belongsTo(Project::class);
+    }
+
+    public function associations()
+    {
+        return $this->hasMany(FileAssociation::class);
     }
 }
