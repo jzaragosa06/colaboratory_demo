@@ -36,18 +36,24 @@ Route::get('/invitations', function () {
     return view('invitations.index');
 })->middleware('auth')->name('invitations.index');
 
-Route::post('files', [FileController::class, 'store'])->name('files.store')->middleware('auth');
+// Route::post('files', [FileController::class, 'store'])->name('files.store')->middleware('auth');
+Route::post('/store_from_project', [FileController::class, 'store_from_project'])->name('store_from_project')->middleware('auth');
+Route::post('/store_not_from_project', [FileController::class, 'store_not_from_project'])->name('store_not_from_project')->middleware('auth');
 
-// routes/web.php
-Route::get('/profile', function () {
-    return view('profile');
-})->middleware('auth')->name('profile');
+
+
+Route::get('/uploadedFiles', [FileController::class, 'uploadedFiles'])->name('uploadedFiles');
+
 
 Route::post('projects/{project}/messages', [MessageController::class, 'store'])->name('messages.store')->middleware('auth');
 
-Route::post('files/{file}/associate', [FileController::class, 'associateJson'])->name('files.associateJson')->middleware('auth');
+Route::post('files/{file}/associate', [FileController::class, 'associateUserJson'])->name('files.associateJson')->middleware('auth');
 
 
 
-Route::get('/user/files', [FileController::class, 'showUserFiles'])->name('user.files');
-Route::post('/user/files/{file}/associate-json', [FileController::class, 'associateUserJson'])->name('user.files.associateJson');
+Route::get('/results', [FileController::class, 'showResults'])->name('results');
+Route::get('/analyze/analyze_data', [FileController::class, 'showUserFiles'])->name('analyze.analyze_data');
+Route::post('/analyze/analyze_data/associate-json', [FileController::class, 'associateUserJson'])->name('analyze.analyze_data.associateJson');
+Route::get('my_profile', function () {
+    return view('my_profile');
+})->name('my_profile');

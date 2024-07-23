@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Facades\Storage;
+
 
 class User extends Authenticatable
 {
@@ -21,6 +23,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'profile_photo',
     ];
 
     /**
@@ -68,5 +71,10 @@ class User extends Authenticatable
     public function messages()
     {
         return $this->hasMany(Message::class);
+    }
+
+    public function getProfilePhotoUrlAttribute()
+    {
+        return $this->profile_photo_path ? Storage::disk('public')->url($this->profile_photo_path) : 'path/to/default/photo.jpg';
     }
 }
