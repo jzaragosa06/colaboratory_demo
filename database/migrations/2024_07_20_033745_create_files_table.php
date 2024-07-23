@@ -18,6 +18,8 @@ return new class extends Migration {
             $table->unsignedBigInteger('project_id')->nullable(); // Nullable for user-specific files
             $table->string('filename');
             $table->string('path');
+            $table->boolean('is_active')->default(false);
+
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

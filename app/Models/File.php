@@ -53,4 +53,8 @@ class File extends Model
     {
         return $this->hasMany(FileAssociation::class);
     }
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
 }

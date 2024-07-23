@@ -113,24 +113,46 @@ class FileController extends Controller
 
     public function associateUserJson(Request $request, File $file)
     {
-        // if ($file->user_id !== Auth::id()) {
-        //     return redirect()->back()->with('error', 'You can only associate JSON with your own files');
-        // }
 
-        // Generate associated JSON file
-        $jsonContent = ['message' => 'This is a system-generated JSON file for ' . $file->filename];
-        $jsonFilename = pathinfo($file->filename, PATHINFO_FILENAME) . '-assoc-' . now()->timestamp . '.json';
-        $jsonPath = 'uploads/' . $jsonFilename;
-        Storage::put($jsonPath, json_encode($jsonContent));
+        if ($file->is_active) {
+            // if ($file->user_id !== Auth::id()) {
+            //     return redirect()->back()->with('error', 'You can only associate JSON with your own files');
+            // }
 
-        // Create a new FileAssociation record
-        FileAssociation::create([
-            'file_id' => $file->id,
-            'associated_file_path' => $jsonPath,
-            'associated_by' => Auth::id(),
-        ]);
+            // Generate associated JSON file
+            $jsonContent = ['message' => 'This is a system-generated JSON file for ' . $file->filename];
+            $jsonFilename = pathinfo($file->filename, PATHINFO_FILENAME) . '-assoc-' . now()->timestamp . '.json';
+            $jsonPath = 'uploads/' . $jsonFilename;
+            Storage::put($jsonPath, json_encode($jsonContent));
 
-        return redirect()->back()->with('success', 'File associated with JSON successfully');
+            // Create a new FileAssociation record
+            FileAssociation::create([
+                'file_id' => $file->id,
+                'associated_file_path' => $jsonPath,
+                'associated_by' => Auth::id(),
+            ]);
+
+            return redirect()->back()->with('success', 'File associated with JSON successfully');
+
+
+        } else {
+            return redirect()->back()->with('error', 'Only the active file can be associated with a JSON result.');
+
+        }
     }
+
+    public function makeActive(File $file)
+    {
+        // Deactivate all other files in the project
+        File::where('project_id', $file->project_id)->update(['is_active' => false]);
+
+        // Activate the selected file
+        $file->is_active = true;
+        $file->save();
+
+        return redirect()->back()->with('success', 'File has been made active.');
+    }
+
+
 
 }

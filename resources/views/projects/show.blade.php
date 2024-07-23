@@ -70,7 +70,7 @@
             </ul> --}}
 
 
-            <h2>Project Files</h2>
+            {{-- <h2>Project Files</h2>
             <ul>
                 @foreach ($project->files as $file)
                     <li>
@@ -88,7 +88,38 @@
                         </form>
                     </li>
                 @endforeach
+            </ul> --}}
+
+            <h2>Project Files</h2>
+            <ul>
+                @foreach ($project->files as $file)
+                    <li>
+                        <a href="{{ Storage::url($file->path) }}">{{ $file->filename }}</a>
+                        @foreach ($file->associations as $association)
+                            <br>Associated JSON: <a
+                                href="{{ Storage::url($association->associated_file_path) }}">{{ pathinfo($association->associated_file_path, PATHINFO_BASENAME) }}</a>
+                            <br>Modified by: <img src="{{ Storage::url($association->user->profile_photo) }}"
+                                class="rounded-circle" alt="{{ $association->user->name }}'s Profile Photo" width="20"
+                                height="20"> {{ $association->user->name }}
+                        @endforeach
+                        @if ($file->is_active)
+                            <form action="{{ route('files.associateJson', $file) }}" method="POST"
+                                style="display:inline;">
+                                @csrf
+                                <button type="submit" class="btn btn-secondary btn-sm">Generate JSON</button>
+                            </form>
+                        @else
+                            <form action="{{ route('files.makeActive', $file) }}" method="POST" style="display:inline;">
+                                @csrf
+                                <button type="submit" class="btn btn-primary btn-sm">Make Active</button>
+                            </form>
+                        @endif
+                    </li>
+                @endforeach
             </ul>
+
+
+
             <h2>Messages</h2>
             <form action="{{ route('messages.store', $project) }}" method="POST">
                 @csrf

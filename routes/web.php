@@ -57,3 +57,5 @@ Route::post('/analyze/analyze_data/associate-json', [FileController::class, 'ass
 Route::get('my_profile', function () {
     return view('my_profile');
 })->name('my_profile');
+
+Route::post('/files/{file}/make-active', [FileController::class, 'makeActive'])->name('files.makeActive');
