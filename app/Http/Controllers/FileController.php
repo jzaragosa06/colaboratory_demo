@@ -141,6 +141,32 @@ class FileController extends Controller
         }
     }
 
+    public function associateUserJson_from_analyze(Request $request)
+    {
+        //from this we extract the file
+        $id = $request->get("file_id");
+
+        $file = File::where('user_id', Auth::id())->where('id', $id)->whereNull('project_id')->first();
+
+        // Generate associated JSON file
+        $jsonContent = ['message' => 'This is a system-generated JSON file for ' . $file->filename];
+        $jsonFilename = pathinfo($file->filename, PATHINFO_FILENAME) . '-assoc-' . now()->timestamp . '.json';
+        $jsonPath = 'uploads/' . $jsonFilename;
+        Storage::put($jsonPath, json_encode($jsonContent));
+
+        echo Auth::id();
+        // Create a new FileAssociation record
+        FileAssociation::create([
+            'file_id' => $file->id,
+            'associated_file_path' => $jsonPath,
+            'associated_by' => Auth::id(),
+        ]);
+
+        return redirect()->back()->with('success', 'File associated with JSON successfully');
+
+
+    }
+
     public function makeActive(File $file)
     {
         // Deactivate all other files in the project

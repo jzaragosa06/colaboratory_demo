@@ -53,7 +53,7 @@ Route::post('files/{file}/associate', [FileController::class, 'associateUserJson
 
 Route::get('/results', [FileController::class, 'showResults'])->name('results');
 Route::get('/analyze/analyze_data', [FileController::class, 'showUserFiles'])->name('analyze.analyze_data');
-Route::post('/analyze/analyze_data/associate-json', [FileController::class, 'associateUserJson'])->name('analyze.analyze_data.associateJson');
+Route::post('/analyze/analyze_data/associate-json', [FileController::class, 'associateUserJson_from_analyze'])->name('analyze.analyze_data.associateJson');
 Route::get('my_profile', function () {
     return view('my_profile');
 })->name('my_profile');
