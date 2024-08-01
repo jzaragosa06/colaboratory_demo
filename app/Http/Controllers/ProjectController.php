@@ -69,6 +69,10 @@ class ProjectController extends Controller
         return redirect()->route('projects.index')->with('success', 'Invitation accepted');
     }
 
+    public function showInvitation()
+    {
+        return view('invitations.index');
+    }
 
 
 }

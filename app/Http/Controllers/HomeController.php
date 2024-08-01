@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\File;
+use App\Models\FileAssociation;
+use Auth;
+use Storage;
+
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
+
     public function __construct()
     {
         $this->middleware('auth');
@@ -25,4 +26,30 @@ class HomeController extends Controller
     {
         return view('home');
     }
+
+
+    public function showInvitation()
+    {
+        return view('invitations.index');
+    }
+
+    public function showResults()
+    {
+        $files = File::where('user_id', Auth::id())->whereNull('project_id')->get();
+        return view('profile.results', compact('files'));
+    }
+
+
+    public function showProfile()
+    {
+        return view('profile.my_profile');
+    }
+
+
+
+    public function uploadedFiles()
+    {
+        return view('profile.uploadedFiles');
+    }
+
 }

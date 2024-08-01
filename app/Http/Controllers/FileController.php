@@ -64,7 +64,7 @@ class FileController extends Controller
         return redirect()->back()->with('success', 'File uploaded and JSON result generated successfully');
     }
 
-    public function showUserFiles()
+    public function analyzeData_from_user()
     {
         // $files = File::where('user_id', Auth::id())->get();
         // return view('user.files', compact('files'));
@@ -73,43 +73,6 @@ class FileController extends Controller
 
     }
 
-    public function showResults()
-    {
-        $files = File::where('user_id', Auth::id())->whereNull('project_id')->get();
-        return view('results', compact('files'));
-    }
-
-
-    public function uploadedFiles()
-    {
-        return view('uploadedFiles');
-    }
-    // public function associateUserJson(Request $request)
-    // {
-    //     $request->validate([
-    //         'file_id' => 'required|exists:files,id'
-    //     ]);
-
-    //     $file = File::find($request->file_id);
-
-    //     if ($file->user_id !== Auth::id()) {
-    //         return redirect()->back()->with('error', 'You can only associate JSON with your own files');
-    //     }
-
-    //     // Generate new JSON result for the selected file
-    //     $jsonContent = ['message' => 'New JSON result for ' . $file->filename];
-    //     $jsonFilename = pathinfo($file->filename, PATHINFO_FILENAME) . '-new-' . now()->timestamp . '.json';
-    //     $jsonPath = 'uploads/' . $jsonFilename;
-    //     Storage::put($jsonPath, json_encode($jsonContent));
-
-    //     FileAssociation::create([
-    //         'file_id' => $file->id,
-    //         'associated_file_path' => $jsonPath,
-    //         'associated_by' => Auth::id(),
-    //     ]);
-
-    //     return redirect()->back()->with('success', 'File associated with new JSON result successfully');
-    // }
 
     public function associateUserJson(Request $request, File $file)
     {
