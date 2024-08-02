@@ -10,7 +10,7 @@ use Storage;
 
 class FileController extends Controller
 {
-    public function store_from_project(Request $request)
+    public function store_to_project(Request $request)
     {
         $request->validate([
             'file' => 'required|file',
@@ -31,7 +31,7 @@ class FileController extends Controller
         return redirect()->back()->with('success', 'File uploaded and JSON result generated successfully');
     }
 
-    public function store_not_from_project(Request $request)
+    public function store_to_user(Request $request)
     {
         $request->validate([
             'file' => 'required|file',

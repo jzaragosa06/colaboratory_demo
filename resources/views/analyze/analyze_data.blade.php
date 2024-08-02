@@ -4,7 +4,7 @@
 @section('content')
     <div class="container">
         <h2>Analye Data </h2>
-        <form action="{{ route('store_not_from_project') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('store_to_user') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="form-group">
                 <label for="file">Upload from Device</label>

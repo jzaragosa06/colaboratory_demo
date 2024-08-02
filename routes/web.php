@@ -39,12 +39,11 @@ Route::post('projects/{project}/accept', [ProjectController::class, 'acceptInvit
 Route::post('projects/{project}/messages', [MessageController::class, 'store'])->name('messages.store')->middleware('auth');
 
 
-Route::post('/store_from_project', [FileController::class, 'store_from_project'])->name('store_from_project')->middleware('auth');
-Route::post('/store_not_from_project', [FileController::class, 'store_not_from_project'])->name('store_not_from_project')->middleware('auth');
-Route::post('files/{file}/associate', [FileController::class, 'associateUserJson'])->name('files.associateJson')->middleware('auth');
-Route::post('/analyze/analyze_data/associate-json', [FileController::class, 'associateUserJson_from_analyze'])->name('analyze.analyze_data.associateJson');
+Route::post('/store_to_project', [FileController::class, 'store_to_project'])->name('store_to_project')->middleware('auth');
+Route::post('/store_to_user', [FileController::class, 'store_to_user'])->name('store_to_user')->middleware('auth');
 Route::post('/files/{file}/make-active', [FileController::class, 'makeActive'])->name('files.makeActive');
 
 
-
+Route::post('files/{file}/associate', [FileController::class, 'associateUserJson'])->name('files.associateJson')->middleware('auth');
+Route::post('/analyze/analyze_data/associate-json', [FileController::class, 'associateUserJson_from_analyze'])->name('analyze.analyze_data.associateJson');
 Route::get('/analyze/analyze_data', [FileController::class, 'analyzeData_from_user'])->name('analyze.analyze_data');
