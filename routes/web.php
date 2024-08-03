@@ -28,6 +28,7 @@ Route::get('/invitations', [HomeController::class, 'showInvitation'])->middlewar
 Route::get('/results', [HomeController::class, 'showResults'])->name('profile.results');
 Route::get('/my_profile', [HomeController::class, 'showProfile'])->name('profile.my_profile');
 Route::get('/uploadedFiles', [HomeController::class, 'uploadedFiles'])->name('profile.uploadedFiles');
+Route::get('/analyze/analyze_data', [HomeController::class, 'analyzeData_from_user'])->name('analyze.analyze_data');
 
 
 Route::resource('projects', ProjectController::class)->middleware('auth');
@@ -39,11 +40,10 @@ Route::post('projects/{project}/accept', [ProjectController::class, 'acceptInvit
 Route::post('projects/{project}/messages', [MessageController::class, 'store'])->name('messages.store')->middleware('auth');
 
 
-Route::post('/store_to_project', [FileController::class, 'store_to_project'])->name('store_to_project')->middleware('auth');
-Route::post('/store_to_user', [FileController::class, 'store_to_user'])->name('store_to_user')->middleware('auth');
+Route::post('/upload_file_to_project', [FileController::class, 'upload_file_to_project'])->name('upload_file_to_project')->middleware('auth');
+Route::post('/upload_file_to_user', [FileController::class, 'upload_file_to_user'])->name('upload_file_to_user')->middleware('auth');
 Route::post('/files/{file}/make-active', [FileController::class, 'makeActive'])->name('files.makeActive');
 
 
 Route::post('files/{file}/associate', [FileController::class, 'associateUserJson'])->name('files.associateJson')->middleware('auth');
 Route::post('/analyze/analyze_data/associate-json', [FileController::class, 'associateUserJson_from_analyze'])->name('analyze.analyze_data.associateJson');
-Route::get('/analyze/analyze_data', [FileController::class, 'analyzeData_from_user'])->name('analyze.analyze_data');

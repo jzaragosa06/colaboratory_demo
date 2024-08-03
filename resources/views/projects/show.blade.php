@@ -42,7 +42,7 @@
                 <button type="submit" class="btn btn-primary">Invite</button>
             </form>
             <h2>Upload File to Project</h2>
-            <form action="{{ route('store_to_project') }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('upload_file_to_project') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <input type="hidden" name="project_id" value="{{ $project->id }}">
                 <div class="form-group">

@@ -10,8 +10,15 @@ use Storage;
 
 class FileController extends Controller
 {
-    public function store_to_project(Request $request)
+
+
+    public function upload_file_to_project(Request $request)
     {
+        /*
+        This function stores the uploaded file from the project. 
+        It also extract other information such as type, freq, and description
+        */
+
         $request->validate([
             'file' => 'required|file',
             'project_id' => 'nullable|exists:projects,id'
@@ -28,15 +35,25 @@ class FileController extends Controller
             'path' => $path,
         ]);
 
-        return redirect()->back()->with('success', 'File uploaded and JSON result generated successfully');
+        return redirect()->back()->with('success', 'File uploaded successfully');
     }
 
-    public function store_to_user(Request $request)
+
+
+
+
+
+
+    public function upload_file_to_user(Request $request)
     {
         $request->validate([
             'file' => 'required|file',
+            'type' => 'required',
+            'freq' => 'required',
+            'description' => 'nullable|string',
             'project_id' => 'nullable|exists:projects,id'
         ]);
+
 
         $file = $request->file('file');
         $filename = $file->getClientOriginalName();
@@ -49,29 +66,37 @@ class FileController extends Controller
             'path' => $path,
         ]);
 
-        // Generate initial JSON result for the uploaded file
-        $jsonContent = ['message' => 'Initial JSON result for ' . $filename];
-        $jsonFilename = pathinfo($filename, PATHINFO_FILENAME) . '-initial-' . now()->timestamp . '.json';
-        $jsonPath = 'uploads/' . $jsonFilename;
-        Storage::put($jsonPath, json_encode($jsonContent));
+        if ($request->input('type') === 'multivariate') {
+            $data = array_map('str_getcsv', file(storage_path('app/' . $path)));
+            $headers = $data[0];
+            array_shift($data);
 
-        FileAssociation::create([
-            'file_id' => $uploadedFile->id,
-            'associated_file_path' => $jsonPath,
-            'associated_by' => Auth::id(),
-        ]);
+            return view('analyze.multivariate', compact('data', 'headers'));
+        } else {
+            $data = array_map('str_getcsv', file(storage_path('app/' . $path)));
+            $headers = $data[0];
+            array_shift($data);
 
-        return redirect()->back()->with('success', 'File uploaded and JSON result generated successfully');
+            return view('analyze.univariate', compact('data', 'headers'));
+        }
+
+
+        // // Generate initial JSON result for the uploaded file
+        // $jsonContent = ['message' => 'Initial JSON result for ' . $filename];
+        // $jsonFilename = pathinfo($filename, PATHINFO_FILENAME) . '-initial-' . now()->timestamp . '.json';
+        // $jsonPath = 'uploads/' . $jsonFilename;
+        // Storage::put($jsonPath, json_encode($jsonContent));
+
+        // /* We will perform this part once we have the json file of the actual result */
+        // FileAssociation::create([
+        //     'file_id' => $uploadedFile->id,
+        //     'associated_file_path' => $jsonPath,
+        //     'associated_by' => Auth::id(),
+        // ]);
+
+        // return redirect()->back()->with('success', 'File uploaded and JSON result generated successfully');
     }
 
-    public function analyzeData_from_user()
-    {
-        // $files = File::where('user_id', Auth::id())->get();
-        // return view('user.files', compact('files'));
-        $files = File::where('user_id', Auth::id())->whereNull('project_id')->get();
-        return view('analyze.analyze_data', compact('files'));
-
-    }
 
 
     public function associateUserJson(Request $request, File $file)

@@ -52,4 +52,13 @@ class HomeController extends Controller
         return view('profile.uploadedFiles');
     }
 
+    public function analyzeData_from_user()
+    {
+        // $files = File::where('user_id', Auth::id())->get();
+        // return view('user.files', compact('files'));
+        $files = File::where('user_id', Auth::id())->whereNull('project_id')->get();
+        return view('analyze.analyze_data', compact('files'));
+
+    }
+
 }
