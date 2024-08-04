@@ -41,16 +41,13 @@
                 </div>
                 <button type="submit" class="btn btn-primary">Invite</button>
             </form>
-            <h2>Upload File to Project</h2>
-            <form action="{{ route('upload_file_to_project') }}" method="POST" enctype="multipart/form-data">
-                @csrf
-                <input type="hidden" name="project_id" value="{{ $project->id }}">
-                <div class="form-group">
-                    <label for="file">File</label>
-                    <input type="file" name="file" id="file" class="form-control">
-                </div>
-                <button type="submit" class="btn btn-primary">Upload</button>
-            </form>
+
+
+
+            <hr>
+            <a href="{{ route('projects.upload', $project) }}">Upload project file</a>
+            <hr>
+
             {{-- <h2>Project Files</h2>
             <ul>
                 @foreach ($project->files as $file)
@@ -103,7 +100,7 @@
                                 height="20"> {{ $association->user->name }}
                         @endforeach
                         @if ($file->is_active)
-                            <form action="{{ route('files.associateJson', $file) }}" method="POST"
+                            <form action="{{ route('analyze.analyze_existing_data_from_project', $file) }}" method="POST"
                                 style="display:inline;">
                                 @csrf
                                 <button type="submit" class="btn btn-secondary btn-sm">Generate JSON</button>

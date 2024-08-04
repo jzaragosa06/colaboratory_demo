@@ -21,7 +21,11 @@ class FileController extends Controller
 
         $request->validate([
             'file' => 'required|file',
-            'project_id' => 'nullable|exists:projects,id'
+            'project_id' => 'nullable|exists:projects,id',
+            'type' => 'required',
+            'freq' => 'required',
+            'description' => 'nullable|string',
+
         ]);
 
         $file = $request->file('file');
@@ -33,6 +37,10 @@ class FileController extends Controller
             'project_id' => $request->project_id,
             'filename' => $filename,
             'path' => $path,
+            'type' => $request->get('type'),
+            'freq' => $request->get('freq'),
+            'description' => $request->get('description')
+
         ]);
 
         return redirect()->back()->with('success', 'File uploaded successfully');
@@ -44,13 +52,13 @@ class FileController extends Controller
 
 
 
-    public function upload_file_to_user(Request $request)
+    public function upload_analyze_file_to_user(Request $request)
     {
         $request->validate([
             'file' => 'required|file',
             'type' => 'required',
             'freq' => 'required',
-            'description' => 'nullable|string',
+            'description' => 'string',
             'project_id' => 'nullable|exists:projects,id'
         ]);
 
@@ -64,6 +72,10 @@ class FileController extends Controller
             'project_id' => $request->project_id,
             'filename' => $filename,
             'path' => $path,
+            'type' => $request->get('type'),
+            'freq' => $request->get('freq'),
+            'description' => $request->get('description')
+
         ]);
 
         if ($request->input('type') === 'multivariate') {
@@ -98,8 +110,8 @@ class FileController extends Controller
     }
 
 
-
-    public function associateUserJson(Request $request, File $file)
+    //this is for project
+    public function analyze_existing_data_from_project(Request $request, File $file)
     {
 
         if ($file->is_active) {
@@ -107,20 +119,43 @@ class FileController extends Controller
             //     return redirect()->back()->with('error', 'You can only associate JSON with your own files');
             // }
 
-            // Generate associated JSON file
-            $jsonContent = ['message' => 'This is a system-generated JSON file for ' . $file->filename];
-            $jsonFilename = pathinfo($file->filename, PATHINFO_FILENAME) . '-assoc-' . now()->timestamp . '.json';
-            $jsonPath = 'uploads/' . $jsonFilename;
-            Storage::put($jsonPath, json_encode($jsonContent));
+            // // Generate associated JSON file
+            // $jsonContent = ['message' => 'This is a system-generated JSON file for ' . $file->filename];
+            // $jsonFilename = pathinfo($file->filename, PATHINFO_FILENAME) . '-assoc-' . now()->timestamp . '.json';
+            // $jsonPath = 'uploads/' . $jsonFilename;
+            // Storage::put($jsonPath, json_encode($jsonContent));
 
-            // Create a new FileAssociation record
-            FileAssociation::create([
-                'file_id' => $file->id,
-                'associated_file_path' => $jsonPath,
-                'associated_by' => Auth::id(),
-            ]);
+            // // Create a new FileAssociation record
+            // FileAssociation::create([
+            //     'file_id' => $file->id,
+            //     'associated_file_path' => $jsonPath,
+            //     'associated_by' => Auth::id(),
+            // ]);
 
-            return redirect()->back()->with('success', 'File associated with JSON successfully');
+            // return redirect()->back()->with('success', 'File associated with JSON successfully');
+
+            $filename = $file->filename;
+            $path = $file->path;
+
+            $type = $file->type;
+            $freq = $file->freq;
+            $description = $file->description;
+
+
+            if ($type === 'multivariate') {
+                $data = array_map('str_getcsv', file(storage_path('app/' . $path)));
+                $headers = $data[0];
+                array_shift($data);
+
+                return view('analyze.multivariate', compact('data', 'headers'));
+            } else {
+                $data = array_map('str_getcsv', file(storage_path('app/' . $path)));
+                $headers = $data[0];
+                array_shift($data);
+
+                return view('analyze.univariate', compact('data', 'headers'));
+            }
+
 
 
         } else {
@@ -129,28 +164,49 @@ class FileController extends Controller
         }
     }
 
-    public function associateUserJson_from_analyze(Request $request)
+    //this is for user
+    public function analyze_existing_data_from_user(Request $request)
     {
         //from this we extract the file
         $id = $request->get("file_id");
 
         $file = File::where('user_id', Auth::id())->where('id', $id)->whereNull('project_id')->first();
+        $filename = $file->filename;
+        $path = $file->path;
 
-        // Generate associated JSON file
-        $jsonContent = ['message' => 'This is a system-generated JSON file for ' . $file->filename];
-        $jsonFilename = pathinfo($file->filename, PATHINFO_FILENAME) . '-assoc-' . now()->timestamp . '.json';
-        $jsonPath = 'uploads/' . $jsonFilename;
-        Storage::put($jsonPath, json_encode($jsonContent));
+        $type = $file->type;
+        $freq = $file->freq;
+        $description = $file->description;
 
-        echo Auth::id();
-        // Create a new FileAssociation record
-        FileAssociation::create([
-            'file_id' => $file->id,
-            'associated_file_path' => $jsonPath,
-            'associated_by' => Auth::id(),
-        ]);
+        if ($type === 'multivariate') {
+            $data = array_map('str_getcsv', file(storage_path('app/' . $path)));
+            $headers = $data[0];
+            array_shift($data);
 
-        return redirect()->back()->with('success', 'File associated with JSON successfully');
+            return view('analyze.multivariate', compact('data', 'headers'));
+        } else {
+            $data = array_map('str_getcsv', file(storage_path('app/' . $path)));
+            $headers = $data[0];
+            array_shift($data);
+
+            return view('analyze.univariate', compact('data', 'headers'));
+        }
+
+
+        // // Generate associated JSON file
+        // $jsonContent = ['message' => 'This is a system-generated JSON file for ' . $file->filename];
+        // $jsonFilename = pathinfo($file->filename, PATHINFO_FILENAME) . '-assoc-' . now()->timestamp . '.json';
+        // $jsonPath = 'uploads/' . $jsonFilename;
+        // Storage::put($jsonPath, json_encode($jsonContent));
+
+        // // Create a new FileAssociation record
+        // FileAssociation::create([
+        //     'file_id' => $file->id,
+        //     'associated_file_path' => $jsonPath,
+        //     'associated_by' => Auth::id(),
+        // ]);
+
+        // return redirect()->back()->with('success', 'File associated with JSON successfully');
 
 
     }

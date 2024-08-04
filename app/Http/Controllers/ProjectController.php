@@ -74,5 +74,10 @@ class ProjectController extends Controller
         return view('invitations.index');
     }
 
+    public function showUpload(Project $project)
+    {
+        return view('projects.upload', compact('project'));
+    }
+
 
 }

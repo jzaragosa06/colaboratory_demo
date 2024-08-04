@@ -37,7 +37,7 @@ class File extends Model
     // {
     //     return $this->hasMany(FileAssociation::class);
     // }
-    protected $fillable = ['user_id', 'project_id', 'filename', 'path'];
+    protected $fillable = ['user_id', 'project_id', 'filename', 'path', 'type', 'freq', 'description'];
 
     public function user()
     {

@@ -19,6 +19,9 @@ return new class extends Migration {
             $table->string('filename');
             $table->string('path');
             $table->boolean('is_active')->default(false);
+            $table->string('type');
+            $table->string('freq');
+            $table->string('description');
 
             $table->timestamps();
 

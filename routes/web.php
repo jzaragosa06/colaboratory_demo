@@ -32,6 +32,7 @@ Route::get('/analyze/analyze_data', [HomeController::class, 'analyzeData_from_us
 
 
 Route::resource('projects', ProjectController::class)->middleware('auth');
+Route::get('/show_upload/{project}', [ProjectController::class, 'showUpload'])->name('projects.upload');
 Route::post('projects/{project}/invite', [ProjectController::class, 'invite'])->name('projects.invite')->middleware('auth');
 Route::post('projects/{project}/invite', [ProjectController::class, 'invite'])->name('projects.invite')->middleware('auth');
 Route::post('projects/{project}/accept', [ProjectController::class, 'acceptInvitation'])->name('projects.acceptInvitation')->middleware('auth');
@@ -41,9 +42,11 @@ Route::post('projects/{project}/messages', [MessageController::class, 'store'])-
 
 
 Route::post('/upload_file_to_project', [FileController::class, 'upload_file_to_project'])->name('upload_file_to_project')->middleware('auth');
-Route::post('/upload_file_to_user', [FileController::class, 'upload_file_to_user'])->name('upload_file_to_user')->middleware('auth');
 Route::post('/files/{file}/make-active', [FileController::class, 'makeActive'])->name('files.makeActive');
 
+Route::post('/upload_analyze_file_to_user', [FileController::class, 'upload_analyze_file_to_user'])->name('analyze.upload_analyze_file_to_user')->middleware('auth');
 
-Route::post('files/{file}/associate', [FileController::class, 'associateUserJson'])->name('files.associateJson')->middleware('auth');
-Route::post('/analyze/analyze_data/associate-json', [FileController::class, 'associateUserJson_from_analyze'])->name('analyze.analyze_data.associateJson');
+//This is for the project
+Route::post('analyze/{file}/projects', [FileController::class, 'analyze_existing_data_from_project'])->name('analyze.analyze_existing_data_from_project')->middleware('auth');
+//while this is for the user
+Route::post('/analyze/analyze_data/existing_data', [FileController::class, 'analyze_existing_data_from_user'])->name('analyze.analyze_existing_data_from_user');
