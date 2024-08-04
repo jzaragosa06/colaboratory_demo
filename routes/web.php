@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\TimeSeriesController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -50,3 +52,6 @@ Route::post('/upload_analyze_file_to_user', [FileController::class, 'upload_anal
 Route::post('analyze/{file}/projects', [FileController::class, 'analyze_existing_data_from_project'])->name('analyze.analyze_existing_data_from_project')->middleware('auth');
 //while this is for the user
 Route::post('/analyze/analyze_data/existing_data', [FileController::class, 'analyze_existing_data_from_user'])->name('analyze.analyze_existing_data_from_user');
+
+//TimeSeriesController
+Route::post('/receive_data', [TimeSeriesController::class, 'receive_data'])->name('ts.receive_data');

@@ -4,6 +4,25 @@
 <head>
     <title>Multivariate Data Processing</title>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <script>
+        $(document).ready(function() {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+        });
+    </script>
 </head>
 
 <body>
@@ -35,8 +54,66 @@
                 </div>
             </div>
         </div>
-        <button id="next-button" class="btn btn-primary" style="display: none;">Next</button>
-        <a id="download-link" style="display: none;">Download Processed Data</a>
+
+        <button type="button" id="next-button" class="btn btn-primary" data-toggle="modal"
+            data-target="#resultMethod">Next</button>
+        {{-- <button id="next-button" class="btn btn-primary" style="display: none;">Next</button> --}}
+        {{-- <a id="download-link" style="display: none;">Download Processed Data</a> --}}
+
+    </div>
+    <!-- The Modal -->
+    <div class="modal fade" id="resultMethod" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Options for the Result</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="modalForm">
+                        <div class="form-group">
+                            <label for="steps">Forecasting Method</label><br>
+                            maximum steps (m) to forecast:<br>
+
+                            <input type="number" id ="steps" name="steps" required>
+                            <p>How the forecast will be made? </p>
+                            <input type="radio" name="method" value = "with_refit">With
+                            Refit<br>
+                            <input type="radio" name="method" value = "without_refit">Without
+                            Refit <br>
+
+                        </div>
+                        <div class="form-group">
+                            <label for="window_size">Trend Analysis Method</label>
+                            {{-- we need to parse it to integer --}}
+                            <p>Specify the window size: </p><br>
+                            <select name="window_size" id = "window_size" class="form-control" required>
+                                <option value="5">5-units window moving average</option>
+                                <option value="10">10-units window moving average</option>
+                                <option value="20">20-units window moving average</option>
+                                <option value="30">30-units window moving average</option>
+                            </select>
+
+                        </div>
+                        <div class="form-group">
+                            <label for="seasonal">Seasonality analysis</label>
+                            <p>Does the data exhibit seasonal behaviour?</p>
+                            <input type="radio" name="seasonal" value = "yes">Yes <br>
+                            <input type="radio" name="seasonal" value = "no">No<br>
+
+
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" id = "submit-button" class="btn btn-primary">Submit</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -176,19 +253,7 @@
             });
         });
 
-        document.getElementById('next-button').addEventListener('click', () => {
-            let finalData = JSON.parse(JSON.stringify(data));
 
-            headers.forEach((header, index) => {
-                if (index > 0) { // Skip the date column
-                    let method = fillMethods[index] || 'forward';
-                    fillMissingValues(method, index);
-                }
-            });
-
-            const csvData = convertToCSV(headers, tempData);
-            createDownloadLink(csvData);
-        });
 
         function convertToCSV(headers, data) {
             const csvRows = [];
@@ -220,6 +285,55 @@
             }
             return dateStr; // If it's already in the correct format
         }
+
+        document.getElementById('submit-button').addEventListener('click', () => {
+            let finalData = JSON.parse(JSON.stringify(data));
+
+            headers.forEach((header, index) => {
+                if (index > 0) { // Skip the date column
+                    let method = fillMethods[index] || 'forward';
+                    fillMissingValues(method, index);
+                }
+            });
+
+            const csvData = convertToCSV(headers, tempData);
+            // createDownloadLink(csvData);
+
+
+            const steps = parseInt(document.getElementById('steps').value, 10);
+            const method = document.querySelector('input[name="method"]:checked').value;
+            const window_size = parseInt(document.getElementById('window_size').value, 10);
+            const seasonal = document.querySelector('input[name="seasonal"]:checked').value;
+
+            // Create a FormData object to send the CSV and other data
+            const formData = new FormData();
+            formData.append('csv_file', new Blob([csvData], {
+                type: 'text/csv'
+            }), 'data.csv');
+            formData.append('steps', steps);
+            formData.append('method', method);
+            formData.append('window_size', window_size);
+            formData.append('seasonal', seasonal);
+
+            // Send the data using AJAX
+            $.ajax({
+                url: '{{ route('ts.receive_data') }}', // URL to your Laravel route
+                type: 'POST',
+                data: formData,
+                processData: false, // Prevent jQuery from automatically transforming the data into a query string
+                contentType: false, // Let the browser set the content type
+                success: function(response) {
+                    console.log('Data successfully sent:', response);
+                    // Handle success response
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error sending data:', error);
+                    // Handle error response
+                }
+            });
+
+
+        });
     </script>
 </body>
 

@@ -6,44 +6,26 @@ use Illuminate\Http\Request;
 
 class TimeSeriesController extends Controller
 {
-    // public function showUploadForm()
-    // {
-    //     return view('upload');
-    // }
+    public function receive_data(Request $request)
+    {
+        // Access the CSV file
+        if ($request->hasFile('csv_file')) {
+            $csvFile = $request->file('csv_file');
+            $csvContent = file_get_contents($csvFile->getRealPath());
 
-    // public function uploadCSV(Request $request)
-    // {
-    //     $request->validate([
-    //         'file' => 'required|mimes:csv,txt',
-    //         'type' => 'required',
-    //         'description' => 'nullable|string'
-    //     ]);
+            // Process CSV content here
+            // For example, you might use a library like Laravel Excel to parse the CSV
+        }
 
-    //     $path = $request->file('file')->store('csv');
+        // Access other form variables
+        $steps = $request->input('steps');
+        $method = $request->input('method');
+        $window_size = $request->input('window_size');
+        $seasonal = $request->input('seasonal');
 
-    //     if ($request->input('type') === 'multivariate') {
-    //         $data = array_map('str_getcsv', file(storage_path('app/' . $path)));
-    //         $headers = $data[0];
-    //         array_shift($data); // Remove header row
+        // Process the form data
+        // ...
 
-    //         return view('multivariate', compact('data', 'headers'));
-    //     } else {
-    //         $data = array_map('str_getcsv', file(storage_path('app/' . $path)));
-    //         $headers = $data[0];
-    //         array_shift($data); // Remove header row
-
-    //         return view('univariate', compact('data', 'headers'));
-    //     }
-    // }
-
-    // public function uploadProcessedCSV(Request $request)
-    // {
-    //     $file = $request->file('file');
-    //     $path = $file->store('processed_csvs');
-
-    //     // Process the file or save the path to the database
-
-    //     return response()->json(['message' => 'Processed CSV uploaded successfully', 'path' => $path]);
-    // }
+        return response()->json(['success' => true, 'message' => 'Data received successfully.']);
+    }
 }
-
