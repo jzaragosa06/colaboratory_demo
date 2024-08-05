@@ -305,6 +305,13 @@
             const window_size = parseInt(document.getElementById('window_size').value, 10);
             const seasonal = document.querySelector('input[name="seasonal"]:checked').value;
 
+
+            //extract the additional data from the controller. 
+            const type = @json($type);
+            const freq = @json($freq);
+            const description = @json($description);
+            const file_id = parseInt(@json($file_id), 10);
+
             // Create a FormData object to send the CSV and other data
             const formData = new FormData();
             formData.append('csv_file', new Blob([csvData], {
@@ -314,6 +321,10 @@
             formData.append('method', method);
             formData.append('window_size', window_size);
             formData.append('seasonal', seasonal);
+            formData.append('type', type);
+            formData.append('freq', freq);
+            formData.append('description', description);
+            formData.append('file_id', file_id);
 
             // Send the data using AJAX
             $.ajax({

@@ -15,17 +15,23 @@ class TimeSeriesController extends Controller
 
             // Process CSV content here
             // For example, you might use a library like Laravel Excel to parse the CSV
+
+            // Access other form variables
+            $steps = $request->input('steps');
+            $method = $request->input('method');
+            $window_size = $request->input('window_size');
+            $seasonal = $request->input('seasonal');
+            $type = $request->input('type');
+            $freq = $request->input('freq');
+            $description = $request->input('description');
+            $file_id = $request->input('file_id');
+
+            // Process the form data
+            // ...
+
+            return response()->json(['success' => true, 'message' => 'Data received successfully.']);
         }
 
-        // Access other form variables
-        $steps = $request->input('steps');
-        $method = $request->input('method');
-        $window_size = $request->input('window_size');
-        $seasonal = $request->input('seasonal');
 
-        // Process the form data
-        // ...
-
-        return response()->json(['success' => true, 'message' => 'Data received successfully.']);
     }
 }

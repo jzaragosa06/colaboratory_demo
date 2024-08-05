@@ -78,18 +78,30 @@ class FileController extends Controller
 
         ]);
 
+        //file id
+        $file_id = $uploadedFile->id;
+
+        //extract the variables. 
+        $type = $request->get('type');
+        $freq = $request->get('freq');
+        $description = $request->get('description');
+
         if ($request->input('type') === 'multivariate') {
             $data = array_map('str_getcsv', file(storage_path('app/' . $path)));
             $headers = $data[0];
             array_shift($data);
 
-            return view('analyze.multivariate', compact('data', 'headers'));
+            // return view('analyze.multivariate', compact('data', 'headers'));
+            return view('analyze.multivariate', compact('data', 'headers', 'type', 'freq', 'description', 'file_id'));
+
         } else {
             $data = array_map('str_getcsv', file(storage_path('app/' . $path)));
             $headers = $data[0];
             array_shift($data);
 
-            return view('analyze.univariate', compact('data', 'headers'));
+            // return view('analyze.univariate', compact('data', 'headers'));
+            return view('analyze.univariate', compact('data', 'headers', 'type', 'freq', 'description', 'file_id'));
+
         }
 
 
@@ -136,6 +148,7 @@ class FileController extends Controller
 
             $filename = $file->filename;
             $path = $file->path;
+            $file_id = $file->id;
 
             $type = $file->type;
             $freq = $file->freq;
@@ -147,13 +160,17 @@ class FileController extends Controller
                 $headers = $data[0];
                 array_shift($data);
 
-                return view('analyze.multivariate', compact('data', 'headers'));
+                // return view('analyze.multivariate', compact('data', 'headers'));
+                return view('analyze.multivariate', compact('data', 'headers', 'type', 'freq', 'description', 'file_id'));
+
             } else {
                 $data = array_map('str_getcsv', file(storage_path('app/' . $path)));
                 $headers = $data[0];
                 array_shift($data);
 
-                return view('analyze.univariate', compact('data', 'headers'));
+                // return view('analyze.univariate', compact('data', 'headers'));
+                return view('analyze.univariate', compact('data', 'headers', 'type', 'freq', 'description', 'file_id'));
+
             }
 
 
@@ -173,6 +190,7 @@ class FileController extends Controller
         $file = File::where('user_id', Auth::id())->where('id', $id)->whereNull('project_id')->first();
         $filename = $file->filename;
         $path = $file->path;
+        $file_id = $file->id;
 
         $type = $file->type;
         $freq = $file->freq;
@@ -183,13 +201,17 @@ class FileController extends Controller
             $headers = $data[0];
             array_shift($data);
 
-            return view('analyze.multivariate', compact('data', 'headers'));
+            // return view('analyze.multivariate', compact('data', 'headers'));
+            return view('analyze.multivariate', compact('data', 'headers', 'type', 'freq', 'description', 'file_id'));
+
         } else {
             $data = array_map('str_getcsv', file(storage_path('app/' . $path)));
             $headers = $data[0];
             array_shift($data);
 
-            return view('analyze.univariate', compact('data', 'headers'));
+            // return view('analyze.univariate', compact('data', 'headers'));
+            return view('analyze.univariate', compact('data', 'headers', 'type', 'freq', 'description', 'file_id'));
+
         }
 
 
